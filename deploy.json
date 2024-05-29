@@ -2,11 +2,18 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "name": {
+    "appServicePlanName": {
+      "type": "string",
+      "defaultValue": "WebAppServicePlan",
+      "metadata": {
+        "description": "Name for the App Service Plan."
+      }
+    },
+    "webAppName": {
       "type": "string",
       "defaultValue": "WebApp",
       "metadata": {
-        "description": "Name for the App Service and related resources."
+        "description": "Name for the Web App."
       }
     },
     "location": {
@@ -21,7 +28,7 @@
     {
       "type": "Microsoft.Web/serverfarms",
       "apiVersion": "2020-06-01",
-      "name": "[parameters('name')]",
+      "name": "[parameters('appServicePlanName')]",
       "location": "[parameters('location')]",
       "sku": {
         "name": "F1",
@@ -31,13 +38,13 @@
     {
       "type": "Microsoft.Web/sites",
       "apiVersion": "2020-06-01",
-      "name": "[parameters('name')]",
+      "name": "[parameters('webAppName')]",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "[resourceId('Microsoft.Web/serverfarms', parameters('name'))]"
+        "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]"
       ],
       "properties": {
-        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('name'))]",
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]",
         "siteConfig": {
           "alwaysOn": true,
           "scmType": "None",
